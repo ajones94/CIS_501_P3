@@ -53,6 +53,13 @@ namespace VendingMachine
                 Coins[i].CoinDispenser.Actuate(Coins[i].NumCoinReturn);
             }
             CurrentFunds = 0;
+            foreach(Can can in Cans)
+            {
+                if (can.PurchaseLight.IsOn())
+                {
+                    can.TurnOffPurchaseLight();
+                }
+            }
         }
 
         public void Reset()

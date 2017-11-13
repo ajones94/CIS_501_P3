@@ -34,11 +34,14 @@ namespace VendingMachine
         {
             CanDispenser.Actuate();
         }
-
-
         public void TurnOnPurchaseLight()
         {
             PurchaseLight.TurnOn();
+        }
+
+        public void TurnOffPurchaseLight()
+        {
+            PurchaseLight.TurnOff();
         }
     }
 }
