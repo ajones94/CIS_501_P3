@@ -43,5 +43,10 @@ namespace VendingMachine
         {
             PurchaseLight.TurnOff();
         }
+
+        public void TurnOnSoldOutLight()
+        {
+            SoldOutLight.TurnOn();
+        }
     }
 }

@@ -23,5 +23,16 @@ namespace VendingMachine
         {
             NumCoins++;
         }
+
+        public void ChangeReturn()
+        {
+            NumCoinReturn++;
+            NumCoins--;
+        }
+
+        public void DisplayReturn()
+        {
+            CoinDispenser.Actuate(NumCoinReturn);
+        }
     }
 }

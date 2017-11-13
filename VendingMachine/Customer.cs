@@ -11,7 +11,8 @@ namespace VendingMachine
         List<Can> Cans;
         List<Coin> Coins;
         public int CurrentFunds { get; set; }
-        public int Difference { get; set; }
+
+        public TimerLight NoChangeLight { get; set; }
 
         public Customer()
         {
@@ -23,6 +24,10 @@ namespace VendingMachine
             Coins = coins;
         }
 
+        public void SetNoChangeLight(TimerLight noChangeLight)
+        {
+            NoChangeLight = noChangeLight;
+        }
         public void CoinInsert(int index)
         {
             Coins[index].Inserted();
@@ -31,34 +36,83 @@ namespace VendingMachine
 
         public void TurnOnPurchaseLight()
         {
-            foreach(Can c in Cans)
+            foreach(Can can in Cans)
             {
-                if(CurrentFunds >= c.Price)
+                if(CurrentFunds >= can.Price)
                 {
-                    c.TurnOnPurchaseLight();
+                    can.TurnOnPurchaseLight();
                 }
             }
         }
         public void PurchaseCan(int Index)
         {
-            if(Cans[Index].PurchaseLight.IsOn() && Cans[Index].Stock > 0) { Cans[Index].Dispense(); }
-            else { return; }
-            Cans[Index].Stock--;
-        }
-        public void CalculateChange()
-        {
-            for(int i = Coins.Count-1; i >= 0; i--)
+            if (CheckNumberOfCoins())
             {
-                if (CurrentFunds >= Coins[i].Value) { Coins[i].NumCoinReturn++; Coins[i].NumCoins--; }
-                Coins[i].CoinDispenser.Actuate(Coins[i].NumCoinReturn);
-            }
-            CurrentFunds = 0;
-            foreach(Can can in Cans)
-            {
-                if (can.PurchaseLight.IsOn())
+                if (Cans[Index].PurchaseLight.IsOn() && Cans[Index].Stock > 0) { Cans[Index].Dispense(); }
+                else { return; }
+                Cans[Index].Stock--;
+                CurrentFunds = CurrentFunds - Cans[Index].Price;
+                foreach (Can can in Cans)
                 {
-                    can.TurnOffPurchaseLight();
+                    if (can.Stock == 0)
+                    {
+                        can.TurnOnSoldOutLight();
+                    }
+
+                    if (can.PurchaseLight.IsOn())
+                    {
+                        can.TurnOffPurchaseLight();
+                    }
                 }
+                ReturnChange();
+            }
+            else
+            {
+                NoChangeLight.TurnOn3Sec();
+            }
+
+        }
+        public bool CheckNumberOfCoins()
+        {
+            foreach(Coin coin in Coins)
+            {
+                if(coin.NumCoins == 0)
+                {
+                    NoChangeLight.TurnOn3Sec();
+                    return true;
+                }
+            }
+            return false;
+        }
+        public void ReturnChange()
+        {
+            if(CurrentFunds > 0)
+            {
+                foreach(Coin coin in Coins)
+                {
+                    while(CurrentFunds >= 0)
+                    {
+                        if (CurrentFunds >= coin.Value)
+                        {
+                            CurrentFunds -= coin.Value;
+                            coin.ChangeReturn();
+                            coin.DisplayReturn();
+                        }
+                        else { break; }
+                    }
+                    coin.NumCoinReturn = 0;
+                }
+            }
+            else
+            {
+                foreach (Can can in Cans)
+                {
+                    if (can.PurchaseLight.IsOn())
+                    {
+                        can.TurnOffPurchaseLight();
+                    }
+                }
+                return;
             }
         }
 
@@ -70,10 +124,15 @@ namespace VendingMachine
                 cans.PurchaseLight.TurnOff();
                 cans.CanDispenser.Clear();
             }
-            Coins[0].NumCoins = 15;
-            Coins[1].NumCoins = 10;
-            Coins[2].NumCoins = 5;
-            Coins[3].NumCoins = 2;
+            foreach(Coin coin in Coins)
+            {
+                coin.CoinDispenser.Clear();
+                coin.NumCoinReturn = 0;
+            }
+            Coins[3].NumCoins = 15;
+            Coins[2].NumCoins = 10;
+            Coins[1].NumCoins = 5;
+            Coins[0].NumCoins = 2;
             CurrentFunds = 0;
         }
     }

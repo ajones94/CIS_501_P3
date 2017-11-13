@@ -60,7 +60,7 @@ namespace VendingMachine
         }
         public void ButtonPressed()
         {
-            Customer.CalculateChange();
+            Customer.ReturnChange();
         }
     }
 }

@@ -96,10 +96,10 @@ namespace VendingMachine
             canDispenser3 = new CanDispenser(txtCanDispenser, CANNAMES[3]);
 
             //needs 
-            coins.Add(new Coin(coinDispenser10Yen, COINVALUES[0], NUMCOINS[0]));
-            coins.Add(new Coin(coinDispenser50Yen, COINVALUES[1], NUMCOINS[1]));
-            coins.Add(new Coin(coinDispenser100Yen, COINVALUES[2], NUMCOINS[2]));
             coins.Add(new Coin(coinDispenser500Yen, COINVALUES[3], NUMCOINS[3]));
+            coins.Add(new Coin(coinDispenser100Yen, COINVALUES[2], NUMCOINS[2]));
+            coins.Add(new Coin(coinDispenser50Yen, COINVALUES[1], NUMCOINS[1]));
+            coins.Add(new Coin(coinDispenser10Yen, COINVALUES[0], NUMCOINS[0]));
 
             cans.Add(new Can(canDispenser0, purchasableLight0, soldOutLight0, NUMCANS[0], CANNAMES[0], CANPRICES[0]));
             cans.Add(new Can(canDispenser1, purchasableLight1, soldOutLight1, NUMCANS[1], CANNAMES[1], CANPRICES[1]));
@@ -121,15 +121,16 @@ namespace VendingMachine
             // You must replace the following default constructors with
             // constructors that take armuments to pass the first object that
             // the CoinInserted() will call
-            coinInserter10Yen = new CoinInserter(customer, 0);
-            coinInserter50Yen = new CoinInserter(customer, 1);
-            coinInserter100Yen = new CoinInserter(customer, 2);
-            coinInserter500Yen = new CoinInserter(customer, 3);
+            coinInserter10Yen = new CoinInserter(customer, 3);
+            coinInserter50Yen = new CoinInserter(customer, 2);
+            coinInserter100Yen = new CoinInserter(customer, 1);
+            coinInserter500Yen = new CoinInserter(customer, 0);
 
             coinReturnButton = new CoinReturnButton(customer);
 
             // Instantiate your entity and control objects
             // Connect these objects
+            customer.SetNoChangeLight(noChangeLight);
             customer.SetLists(cans, coins);
 
             // Display debug information
@@ -240,10 +241,10 @@ namespace VendingMachine
         private void updateDebugDisplays()
         {
             // You need to change XXX to appropriate "object.property"
-            displayNum10Yen.Display(coins[0].NumCoins);
-            displayNum50Yen.Display(coins[1].NumCoins);
-            displayNum100Yen.Display(coins[2].NumCoins);
-            displayNum500Yen.Display(coins[3].NumCoins);
+            displayNum10Yen.Display(coins[3].NumCoins);
+            displayNum50Yen.Display(coins[2].NumCoins);
+            displayNum100Yen.Display(coins[1].NumCoins);
+            displayNum500Yen.Display(coins[0].NumCoins);
             displayNumCans0.Display(cans[0].Stock);
             displayNumCans1.Display(cans[1].Stock);
             displayNumCans2.Display(cans[2].Stock);
